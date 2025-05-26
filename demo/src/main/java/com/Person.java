@@ -22,7 +22,25 @@ private String birthdate;
 private HashMap<Date, Integer> demeritPoints; // A variable that holds the demerit points with the offense day
 private boolean isSuspended;
 
+public static String[] splitByPipe(String address) {
+    String[] parts = new String[5];
+    int start = 0;
+    int partIndex = 0;
 
+    for (int i = 0; i < 4; i++) {  // We expect 5 parts, so 4 pipes to find
+        int pipeIndex = address.indexOf('|', start);
+        if (pipeIndex == -1) {
+            // Not enough parts
+            return null; // or handle error
+        }
+        parts[partIndex++] = address.substring(start, pipeIndex).trim();
+        start = pipeIndex + 1;
+    }
+    // Last part after the last pipe
+    parts[partIndex] = address.substring(start).trim();
+
+    return parts;
+}
 public boolean addPerson() {
 // return false;
 // Check if personID is 10 characters
@@ -53,9 +71,16 @@ if (personID == null || personID.length() != 10) {
 
 // format check
     if (address == null) return false;
-    String[] addressParts = address.split("\\|");
+    String[] addressParts = splitByPipe(address);
+    if (addressParts == null || addressParts.length != 5) {
+        // invalid address format
+    }    
     if (addressParts.length != 5) return false;
-    if (!addressParts[3].trim().equals("Victoria")) return false;
+    if (!addressParts[3].trim().equals("Victoria")) return false; 
+    //coppied, need to specify the twim equals is a stack overflow special
+    // some of this above code for parsing  code from ws3 schools, should credit
+    //https://stackoverflow.com/questions/4736/learning-regular-expressions 
+
 // format cehck
     if (birthdate == null || birthdate.length() != 10) return false;
     if (birthdate.charAt(2) != '-' || birthdate.charAt(5) != '-') return false;
