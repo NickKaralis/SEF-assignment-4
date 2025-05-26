@@ -109,7 +109,7 @@ public boolean updatePersonalDetails() {
 }
 public String addDemeritPoints()
 {
-    return "";
+    return ""; //remove after finishing
 }
 }
 //TODO: This method adds demerit points for a given person in a TXT file.
