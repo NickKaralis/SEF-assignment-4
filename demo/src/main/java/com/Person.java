@@ -1,31 +1,27 @@
 package com;
 
 import java.util.*;
-import java.util.HashMap;
-import java.util.Date;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.HashMap;
-import java.util.Date;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.PrintStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
 
 public class Person {
-    private String personID;
-    private String firstName;
-    private String lastName;
-    private String address;
-    private String birthdate;
-    private HashMap<Date, Integer> demeritPoints; // A variable that holds the demerit points with the offense day
-    private boolean isSuspended;
+    public String personID;
+    public String firstName;
+    public String lastName;
+    public String address;
+    public String birthdate;
+    public HashMap<LocalDate, Integer> demeritPoints = new HashMap<LocalDate, Integer>(); // A variable that holds the
+    // demerit
+    // points with the offense day
+    public boolean isSuspended;
 
     // FORMATTING
     // id,firstName,lastName,address,birthdate

@@ -1,8 +1,19 @@
 package com;
 
 import java.util.Scanner;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
+
+    public List<Person> persons = new ArrayList<Person>();
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -81,6 +92,76 @@ public class Main {
             }
         }
 
+    }
+
+    public void read() {
+        try {
+            FileInputStream fis = new FileInputStream("persons.txt");
+            Scanner scanner = new Scanner(fis);
+
+            String userLine = null;
+
+            // add all users except the one editting to to lines
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] userDetails = line.split(",", -1);
+                Person person = new Person();
+
+                person.personID = userDetails[0];
+                person.firstName = userDetails[1];
+                person.lastName = userDetails[2];
+                person.address = userDetails[3];
+                person.birthdate = userDetails[4];
+
+                for (int i = 5; i < userDetails.length; i += 2) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    LocalDate birthDateCheckDate = LocalDate.parse(userDetails[i], formatter);
+
+                    int amount = Integer.parseInt(userDetails[i + 1]);
+                    person.demeritPoints.put(birthDateCheckDate, amount);
+                }
+
+            }
+        } catch (Exception e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
+
+    public void write() {
+        // Clear the contents of the file before writing updated data
+        try (FileOutputStream fos = new FileOutputStream("persons.txt")) {
+            // Opening the file in this mode clears its contents
+        } catch (IOException e) {
+            System.out.println("Error clearing file: " + e.getMessage());
+            return;
+        }
+
+        // write back all lines to persons.txt
+        try {
+            FileOutputStream fos = new FileOutputStream("persons.txt", true);
+            PrintStream ps = new PrintStream(fos);
+
+            for (Person p : persons) {
+                StringBuilder line = new StringBuilder();
+                line.append(p.personID).append(",");
+                line.append(p.firstName).append(",");
+                line.append(p.lastName).append(",");
+                line.append(p.address).append(",");
+                line.append(p.birthdate).append(",");
+                for (LocalDate date : p.demeritPoints.keySet()) {
+                    line.append(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))).append(",");
+                    line.append(p.demeritPoints.get(date)).append(",");
+                }
+
+                ps.println(line);
+            }
+
+            ps.close();
+            fos.close();
+        } catch (IOException e) {
+            System.out.println("Error writing file: " + e.getMessage());
+            return;
+        }
     }
 
 }
