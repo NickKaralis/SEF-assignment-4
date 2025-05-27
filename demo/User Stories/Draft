@@ -1,0 +1,11 @@
+# 8 User Stories are required along with 24 acceptance criteria
+
+# User Story 01
+As a new User, I want to create my own account and fill in the personal details, so that I can be registered on the RoadRegistry system and utilize the features of the system.
++ Acceptance Criteria
+- The system must validate the userID, address format and date of birth format along with a piece of ID document uploaded upon account creation
+- The user must receive a email confirmation if the account is created.
+- Incomplete Fields must be higlighted and deny registration by displaying error messages.
+
+# User Story 02
+
