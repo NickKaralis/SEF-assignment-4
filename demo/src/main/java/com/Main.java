@@ -12,10 +12,11 @@ import java.util.List;
 
 public class Main {
 
-    public List<Person> persons = new ArrayList<Person>();
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
+        List<Person> persons = new ArrayList<Person>();
+        read(persons);
 
         while (true) {
             System.out.println("What would you like to do?");
@@ -44,6 +45,9 @@ public class Main {
                     continue; // Ask for input again
                 }
 
+                persons.add(person); // Add the person to the list
+                write(persons); // Write the updated list to the file)
+
                 // Here we need to add to method to add a person
                 System.out.println("Person added with ID: " + personID);
 
@@ -61,11 +65,24 @@ public class Main {
                 System.out.println("Please enter the new birthdate (YYYY-MM-DD):");
                 String birthdate = scanner.nextLine();
 
-                Person person = new Person();
-                boolean isAdded = person.updatePersonalDetails(personID, newID, firstName, lastName, address,
-                        birthdate);
-                if (!isAdded) {
-                    System.out.println("Failed to cahnge person. Please check the input values.");
+                Person person = null;
+                for (Person p : persons) {
+                    if (p.personID.equals(personID)) {
+                        person = p;
+                        break;
+                    }
+                }
+
+                if (person == null) {
+                    System.out.println("Person with ID " + personID + " not found.");
+                    continue; // Ask for input again
+                }
+
+                if (person.updatePersonalDetails(personID, newID, firstName, lastName, address, birthdate)) {
+                    write(persons);
+                    System.out.println("Personal details updated successfully.");
+                } else {
+                    System.out.println("Failed to update personal details. Please check the input values.");
                     continue; // Ask for input again
                 }
 
@@ -94,7 +111,7 @@ public class Main {
 
     }
 
-    public void read() {
+    public static void read(List<Person> persons) {
         try {
             FileInputStream fis = new FileInputStream("persons.txt");
             Scanner scanner = new Scanner(fis);
@@ -125,9 +142,10 @@ public class Main {
         } catch (Exception e) {
             System.out.println("Error reading file: " + e.getMessage());
         }
+
     }
 
-    public void write() {
+    public static void write(List<Person> persons) {
         // Clear the contents of the file before writing updated data
         try (FileOutputStream fos = new FileOutputStream("persons.txt")) {
             // Opening the file in this mode clears its contents

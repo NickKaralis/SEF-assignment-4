@@ -52,17 +52,13 @@ public class Person {
             return false;
         }
 
-        // make file ts
-        try {
-            FileOutputStream fos = new FileOutputStream("persons.txt", true);
-            PrintStream ps = new PrintStream(fos);
-            // true represents is valid
-            ps.println(personID + "," + firstName + "," + lastName + "," + address + "," + birthdate + "," + true);
-            ps.close();
-            fos.close();
-        } catch (IOException e) {
-            return false;
-        }
+        this.personID = personID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.birthdate = birthdate;
+        this.isSuspended = false; // default value
+        this.demeritPoints = new HashMap<LocalDate, Integer>(); // Initialize demerit points
 
         System.out.println("completed added");
 
