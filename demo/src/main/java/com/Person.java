@@ -103,20 +103,6 @@ public class Person {
             return false;
         }
 
-        // Check if the person is under 18
-        boolean isUnder18 = false;
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            LocalDate birthDate = LocalDate.parse(birthdate, formatter);
-            LocalDate today = LocalDate.now();
-            if (today.minusYears(18).isBefore(birthDate)) {
-                System.out.println("Your address will not be changed as you are under 18");
-                isUnder18 = true;
-            }
-        } catch (DateTimeParseException e) {
-            System.out.println("Invalid birthdate format");
-        }
-
         boolean idEven = false;
         if (personID.charAt(0) % 2 == 0 && !newID.equals(personID)) {
             System.out.println("Your ID will not be changed as the first character is an even number");
@@ -179,6 +165,27 @@ public class Person {
                     updatedLine = userDetails[0] + "," + userDetails[1] + "," + userDetails[2] + ","
                             + userDetails[3] + "," + birthdate;
                 } else {
+
+                    // Check if the person is under 18
+                    boolean isUnder18 = false;
+                    try {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                        LocalDate birthDateCheckDate = LocalDate.parse(existingBirthdate, formatter);
+                        LocalDate today = LocalDate.now();
+
+                        System.out.println("today: " + today);
+                        System.out.println("birthDate: " + birthDateCheckDate);
+                        System.out.println("minus" + today.minusYears(18));
+                        System.out.println("bool" + today.minusYears(18).isBefore(birthDateCheckDate));
+
+                        if (today.minusYears(18).isBefore(birthDateCheckDate)) {
+                            System.out.println("Your address will not be changed as you are under 18");
+                            isUnder18 = true;
+                        }
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Invalid birthdate format");
+                    }
+
                     if (isUnder18) {
                         address = userDetails[3]; // If under 18, address is not changed
                     }
@@ -186,6 +193,9 @@ public class Person {
                     if (idEven) {
                         // ID should not be updated but everything else is
                         updatedLine = userDetails[0] + "," + firstName + "," + lastName + "," + address + ","
+                                + birthdate;
+                    } else {
+                        updatedLine = newID + "," + firstName + "," + lastName + "," + address + ","
                                 + birthdate;
                     }
 
