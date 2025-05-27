@@ -8,13 +8,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.HashMap;
-import java.util.Date;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
 
 public class Person {
 private String personID; private String firstName; private String lastName; private String address;
@@ -22,6 +17,15 @@ private String birthdate;
 private HashMap<Date, Integer> demeritPoints; // A variable that holds the demerit points with the offense day
 private boolean isSuspended;
 
+public boolean dateChecker(String dateToCheck){ 
+
+// format cehck
+if (dateToCheck == null || dateToCheck.length() != 10) return false;
+if (dateToCheck.charAt(2) != '-' || dateToCheck.charAt(5) != '-') return false;
+    return true;
+}
+
+//Stack overflow special
 public static String[] splitByPipe(String address) {
     String[] parts = new String[5];
     int start = 0;
@@ -41,6 +45,8 @@ public static String[] splitByPipe(String address) {
 
     return parts;
 }
+
+
 public boolean addPerson() {
 // return false;
 // Check if personID is 10 characters
@@ -134,11 +140,13 @@ public boolean updatePersonalDetails() {
 }
 public String addDemeritPoints()
 {
+    
     return ""; //remove after finishing
 }
 }
 //TODO: This method adds demerit points for a given person in a TXT file.
-//Condition 1: The format of the date of the offense should follow the following format: DD-MM-YYYY. Example: 15-11-1990 //Condition 2:
+//Condition 1: The format of the date of the offense should follow the following format: DD-MM-YYYY. Example: 15-11-1990 
+//Condition 2:
 // The demerit points must be a whole number between 1-6
 //Condition 3: If the person is under 21, the isSuspended variable should be set to true if the total demerit points within two years exceed 6. //If the person is over 21, the isSuspended variable should be set to true if the total demerit points within two years exceed
 // 12.
