@@ -27,6 +27,9 @@ public class Person {
     private HashMap<Date, Integer> demeritPoints; // A variable that holds the demerit points with the offense day
     private boolean isSuspended;
 
+    // FORMATTING
+    // id,firstName,lastName,address,birthdate
+
     public static String[] splitByPipe(String address) {
         String[] parts = new String[5];
         int start = 0;
@@ -57,7 +60,8 @@ public class Person {
         try {
             FileOutputStream fos = new FileOutputStream("persons.txt", true);
             PrintStream ps = new PrintStream(fos);
-            ps.println(personID + "," + firstName + "," + lastName + "," + address + "," + birthdate);
+            // true represents is valid
+            ps.println(personID + "," + firstName + "," + lastName + "," + address + "," + birthdate + "," + true);
             ps.close();
             fos.close();
         } catch (IOException e) {
@@ -99,7 +103,37 @@ public class Person {
             return false;
         }
 
+        // Check if the person is under 18
+        boolean isUnder18 = false;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDate birthDate = LocalDate.parse(birthdate, formatter);
+            LocalDate today = LocalDate.now();
+            if (today.minusYears(18).isBefore(birthDate)) {
+                System.out.println("Your address will not be changed as you are under 18");
+                isUnder18 = true;
+            }
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid birthdate format");
+        }
+
+        boolean idEven = false;
+        if (personID.charAt(0) % 2 == 0 && !newID.equals(personID)) {
+            System.out.println("Your ID will not be changed as the first character is an even number");
+            idEven = true;
+        }
+
+        // NEED TO CHECK UPDATE CONDITIONS
+        // Condition 1: If a person is under 18, their address cannot be changed.
+        // Condition 2: If a person's birthday is going to be changed, then no other
+        // personal detail can be changed
+        // (i.e, person's ID, firstName, lastName, address) cannot be changed.
+        // Condition 3: If the first character/digit of a person's ID is an even number,
+        // then their ID cannot be changed.
+
+        // create list of lines in the persons.txt file
         List<String> lines = new ArrayList<>();
+
         // need to search persons file for personID
         try {
             FileInputStream fis = new FileInputStream("persons.txt");
@@ -117,6 +151,8 @@ public class Person {
                 }
             }
 
+            System.out.println("HERE 1");
+
             scanner.close();
             fis.close();
 
@@ -127,10 +163,38 @@ public class Person {
                 return false;
             }
 
+            System.out.println("HERE 2");
+
             // create updated user line
             if (userLine != null) {
+
+                // Check if the birthdate is the same as in the file
                 String[] userDetails = userLine.split(",", -1);
-                String updatedLine = newID + "," + firstName + "," + lastName + "," + address + "," + birthdate;
+                String existingBirthdate = userDetails[4];
+
+                String updatedLine = null;
+
+                if (!existingBirthdate.equals(birthdate)) {
+                    System.out.println("birthday differs from existing birthday, cannot change other details");
+                    updatedLine = userDetails[0] + "," + userDetails[1] + "," + userDetails[2] + ","
+                            + userDetails[3] + "," + birthdate;
+                } else {
+                    if (isUnder18) {
+                        address = userDetails[3]; // If under 18, address is not changed
+                    }
+
+                    if (idEven) {
+                        // ID should not be updated but everything else is
+                        updatedLine = userDetails[0] + "," + firstName + "," + lastName + "," + address + ","
+                                + birthdate;
+                    }
+
+                }
+
+                System.out.println("HERE 3");
+
+                System.out.println("updatedLine: " + updatedLine);
+                // String[] userDetails = userLine.split(",", -1);
 
                 // DEMERITE POINT UPDATE - this is where it should add the demerit poitns when
                 // updated
@@ -148,9 +212,13 @@ public class Person {
                 return false; // Person not found, cannot update
             }
 
+            System.out.println("HERE 4");
+
         } catch (IOException e) {
             return false;
         }
+
+        System.out.println("HERE 5");
 
         // Clear the contents of the file before writing updated data
         try (FileOutputStream fos = new FileOutputStream("persons.txt")) {
@@ -158,6 +226,8 @@ public class Person {
         } catch (IOException e) {
             return false;
         }
+
+        System.out.println("HERE 6");
 
         // write back all lines to persons.txt
         try {
@@ -195,6 +265,13 @@ public class Person {
     }
 
     public String addDemeritPoints() {
+        // alright the scary part
+        // new demerit points need to be added onto the end of the person's line in the
+        // persons.txt file
+        // the demerit points should be added in the format: "DD-MM-YYYY,points"
+
+        // it will also require
+
         return ""; // remove after finishing
     }
 
