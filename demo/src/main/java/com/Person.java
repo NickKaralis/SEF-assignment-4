@@ -26,25 +26,9 @@ public class Person {
     // FORMATTING
     // id,firstName,lastName,address,birthdate
 
-    public static String[] splitByPipe(String address) {
-        String[] parts = new String[5];
-        int start = 0;
-        int partIndex = 0;
-
-        for (int i = 0; i < 4; i++) { // We expect 5 parts, so 4 pipes to find
-            int pipeIndex = address.indexOf('|', start);
-            if (pipeIndex == -1) {
-                // Not enough parts
-                return null; // or handle error
-            }
-            parts[partIndex++] = address.substring(start, pipeIndex).trim();
-            start = pipeIndex + 1;
-        }
-        // Last part after the last pipe
-        parts[partIndex] = address.substring(start).trim();
-
-        return parts;
-    }
+//      |----------------------------------------------------------------------------------------------------|
+//      |----------------------------------------------------------------------------------------------------|
+//      |----------------------------------------------------------------------------------------------------|
 
     public boolean addPerson(String personID, String firstName, String lastName, String address, String birthdate) {
         // validate inputs
@@ -81,9 +65,12 @@ public class Person {
     // inserted into a TXT file, and the addPerson function should return true.
     // Otherwise, the information should not be inserted into the TXT file, and the
     // addPerson function should return false. return true;
+//  |----------------------------------------------------------------------------------------------------|
+//  |----------------------------------------------------------------------------------------------------|
+//  |----------------------------------------------------------------------------------------------------|
+
     public boolean updatePersonalDetails(String personID, String newID, String firstName, String lastName,
-            String address,
-            String birthdate) {
+            String address, String birthdate) {
 
         // validate all inputs
         if (validate(personID, firstName, lastName, address, birthdate) == false) {
@@ -95,10 +82,11 @@ public class Person {
             return false;
         }
 
-        boolean idEven = false;
-        if (personID.charAt(0) % 2 == 0 && !newID.equals(personID)) {
+        boolean isEven = false;
+        int firstDigit = Character.getNumericValue(personID.charAt(0));
+        if (firstDigit % 2 == 0 && !newID.equals(personID)) {
             System.out.println("Your ID will not be changed as the first character is an even number");
-            idEven = true;
+            isEven = true;
         }
 
         // NEED TO CHECK UPDATE CONDITIONS
@@ -129,20 +117,10 @@ public class Person {
                 }
             }
 
-            System.out.println("HERE 1");
+            // System.out.println("HERE 1");
 
             scanner.close();
             fis.close();
-
-            // Clear the contents of the file before writing updated data
-            try (FileOutputStream fos = new FileOutputStream("persons.txt")) {
-                // Opening the file in this mode clears its contents
-            } catch (IOException e) {
-                return false;
-            }
-
-            System.out.println("HERE 2");
-
             // create updated user line
             if (userLine != null) {
 
@@ -153,23 +131,20 @@ public class Person {
                 String updatedLine = null;
 
                 if (!existingBirthdate.equals(birthdate)) {
-                    System.out.println("birthday differs from existing birthday, cannot change other details");
-                    updatedLine = userDetails[0] + "," + userDetails[1] + "," + userDetails[2] + ","
-                            + userDetails[3] + "," + birthdate;
+                    // reject if other fields changed
+                    if (!newID.equals(userDetails[0]) || !firstName.equals(userDetails[1]) || !lastName.equals(userDetails[2]) || !address.equals(userDetails[3])) {
+                        System.out.println("Cannot change other details if birthday is changed");
+                        return false;
+                    }
+                    System.out.println("birthday differs from existing birthday, updating only birthday");
+                    updatedLine = userDetails[0] + "," + userDetails[1] + "," + userDetails[2] + "," + userDetails[3] + "," + birthdate;
                 } else {
-
-                    // Check if the person is under 18
+                    // check if under 18 for address change
                     boolean isUnder18 = false;
                     try {
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                         LocalDate birthDateCheckDate = LocalDate.parse(existingBirthdate, formatter);
                         LocalDate today = LocalDate.now();
-
-                        System.out.println("today: " + today);
-                        System.out.println("birthDate: " + birthDateCheckDate);
-                        System.out.println("minus" + today.minusYears(18));
-                        System.out.println("bool" + today.minusYears(18).isBefore(birthDateCheckDate));
-
                         if (today.minusYears(18).isBefore(birthDateCheckDate)) {
                             System.out.println("Your address will not be changed as you are under 18");
                             isUnder18 = true;
@@ -177,72 +152,45 @@ public class Person {
                     } catch (DateTimeParseException e) {
                         System.out.println("Invalid birthdate format");
                     }
-
                     if (isUnder18) {
-                        address = userDetails[3]; // If under 18, address is not changed
+                        address = userDetails[3]; // keep old address
                     }
-
-                    if (idEven) {
-                        // ID should not be updated but everything else is
-                        updatedLine = userDetails[0] + "," + firstName + "," + lastName + "," + address + ","
-                                + birthdate;
+                
+                    if (isEven) {
+                        updatedLine = userDetails[0] + "," + firstName + "," + lastName + "," + address + "," + birthdate;
                     } else {
-                        updatedLine = newID + "," + firstName + "," + lastName + "," + address + ","
-                                + birthdate;
+                        updatedLine = newID + "," + firstName + "," + lastName + "," + address + "," + birthdate;
                     }
-
                 }
-
-                System.out.println("HERE 3");
+                
 
                 System.out.println("updatedLine: " + updatedLine);
-                // String[] userDetails = userLine.split(",", -1);
 
                 // DEMERITE POINT UPDATE - this is where it should add the demerit poitns when
                 // updated
-                // Append any remaining details from the original line that are not part of the
-                // updated details
+             
                 for (int i = 5; i < userDetails.length; i++) {
                     updatedLine += "," + userDetails[i];
                 }
 
                 // Add the updated line to the list of lines
                 lines.add(updatedLine);
-
+            
             } else {
                 System.out.println("Person with ID " + personID + " not found.");
                 return false; // Person not found, cannot update
             }
 
-            System.out.println("HERE 4");
+            // System.out.println("HERE 4");
 
         } catch (IOException e) {
             return false;
         }
-
-        System.out.println("HERE 5");
-
-        // Clear the contents of the file before writing updated data
-        try (FileOutputStream fos = new FileOutputStream("persons.txt")) {
-            // Opening the file in this mode clears its contents
-        } catch (IOException e) {
-            return false;
-        }
-
-        System.out.println("HERE 6");
-
-        // write back all lines to persons.txt
-        try {
-            FileOutputStream fos = new FileOutputStream("persons.txt", true);
-            PrintStream ps = new PrintStream(fos);
-            for (String line : lines) {
-                ps.println(line);
-            }
-            ps.close();
-            fos.close();
-        } catch (IOException e) {
-            return false;
-        }
+        this.personID = isEven ? this.personID : newID; // Only update if allowed
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.birthdate = birthdate;
 
         return true;
         // TODO: This method allows updating a given person's ID, firstName, lastName,
@@ -265,17 +213,62 @@ public class Person {
         // TXT file, and the updatePersonalDetails function should return false. return
         // true;
     }
-
-    public String addDemeritPoints() {
-        // alright the scary part
-        // new demerit points need to be added onto the end of the person's line in the
-        // persons.txt file
-        // the demerit points should be added in the format: "DD-MM-YYYY,points"
-
-        // it will also require
-
-        return ""; // remove after finishing
+//|----------------------------------------------------------------------------------------------------|
+//|----------------------------------------------------------------------------------------------------|
+//|----------------------------------------------------------------------------------------------------|
+public String addDemeritPoints(int demeritsToAdd, String offenceDate) {
+    if (demeritsToAdd < 1 || demeritsToAdd > 6) {
+        System.out.println("Demerit points must be between 1 and 6.");
+        return "Failed";
     }
+    if (!isValidDate(offenceDate)) {
+        return "Failed";
+    }
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    LocalDate offenceLocalDate = LocalDate.parse(offenceDate, formatter);
+
+    // Age at offence
+    LocalDate birthLocalDate = LocalDate.parse(this.birthdate, formatter);
+    int age = offenceLocalDate.getYear() - birthLocalDate.getYear();
+    if (birthLocalDate.plusYears(age).isAfter(offenceLocalDate)) {
+        age--;
+    }
+
+    // Calculate total within 2 years
+    int totalPoints = 0;
+    LocalDate twoYearsAgo = offenceLocalDate.minusYears(2);
+    for (Map.Entry<LocalDate, Integer> entry : demeritPoints.entrySet()) {
+        LocalDate date = entry.getKey();
+        int points = entry.getValue();
+        if ((date.isEqual(twoYearsAgo) || date.isAfter(twoYearsAgo)) &&
+            (date.isBefore(offenceLocalDate) || date.isEqual(offenceLocalDate))) {
+            totalPoints += points;
+        }
+    }
+
+    // Add new points
+    totalPoints += demeritsToAdd;
+    this.demeritPoints.put(offenceLocalDate, demeritsToAdd);
+    System.out.println("TOTAL POINTS" + totalPoints);
+    System.out.println("AGE" + age);
+
+    // Update suspension
+    if (age < 21) {
+        if (totalPoints > 6) {
+            this.isSuspended = true;
+        } else {
+            this.isSuspended = false;
+        }
+    } else {
+        if (totalPoints > 12) {
+            this.isSuspended = true;
+        } else {
+            this.isSuspended = false;
+        }
+    }
+    return "Success";
+}
 
     // TODO: This method adds demerit points for a given person in a TXT file.
     // Condition 1: The format of the date of the offense should follow the
@@ -283,7 +276,7 @@ public class Person {
     // Condition 2: The demerit points must be a whole number between 1-6
     // Condition 3: If the person is under 21, the isSuspended variable should be
     // set to true if the total demerit points within two years exceed 6.
-    // If the person is over 21, the isSuspended variable should be set to true if
+    // Condition 4: If the person is over 21, the isSuspended variable should be set to true if
     // the total demerit points within two years exceed 12.
 
     // Instruction: If the above condiations and any other conditions you may want
@@ -291,7 +284,11 @@ public class Person {
     // the TXT file, //and the addDemerit Points function should return "Sucess".
     // Otherwise, the addDemeritPoints function should return "Failed". return
     // "Sucess";
+    
 
+
+    //|----------------------------------------------------------------------------------------------------|
+//HELPER FUNCTIONS 
     public boolean validateID(String personID) {
         if (personID == null || personID.length() != 10) {
             System.out.println(personID);
@@ -337,25 +334,52 @@ public class Person {
         return true;
     }
 
+
     public boolean validateAddress(String address) {
         if (address == null) {
             System.out.println("Address is null");
+            System.out.println("");
+
             return false;
         }
-
         String[] addressParts = splitByPipe(address);
         if (addressParts == null || addressParts.length != 5) {
-            System.out.println("Address format is invalid");
-            return false; // 5 parts expected, invalid address format
-            // invalid address format
-        }
-        if (!addressParts[2].trim().equals("Victoria")) {
-
-            System.out.println(addressParts[2]);
-            System.out.println("State is not Victoria");
+            System.out.println("Address must have 5 parts separated by '|'.");
             return false;
         }
-
+    
+        // Validate Street Number
+        try {
+            Integer.parseInt(addressParts[0]);
+        } catch (NumberFormatException e) {
+            System.out.println("Street number must be a valid number.");
+            return false;
+        }
+    
+        // Validate Street Name
+        if (addressParts[1].isEmpty()) {
+            System.out.println("Street name is blank. Street name cannot be empty.");
+            return false;
+        }
+    
+        // Validate City
+        if (addressParts[2].isEmpty()) {
+            System.out.println("City is blank. City cannot be blank");
+            return false;
+        }
+    
+        // Validate State
+        if (!addressParts[3].equals("Victoria")) {
+            System.out.println("State must be 'Victoria'.");
+            return false;
+        }
+    
+        // Validate Country
+        if (addressParts[4].isEmpty()) {
+            System.out.println("Country is blank. Country cannot be empty.");
+            return false;
+        }
+    
         return true;
     }
 
@@ -417,5 +441,45 @@ public class Person {
 
         return true;
     }
+    public String getPersonID(){ return this.personID;}
+    public boolean isValidDate(String dateStr) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        try {
+            LocalDate.parse(dateStr, formatter);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Date format invalid: " + dateStr);
+            return false;
+        }
+    }
 
+    public static String[] splitByPipe(String address) {
+        String[] parts = new String[5];
+        int start = 0;
+        int partIndex = 0;
+
+        for (int i = 0; i < 4; i++) { // We expect 5 parts, so 4 pipes to find
+            int pipeIndex = address.indexOf('|', start);
+            if (pipeIndex == -1) {
+                // Not enough parts
+                return null; // or handle error
+            }
+            parts[partIndex++] = address.substring(start, pipeIndex).trim();
+            start = pipeIndex + 1;
+        }
+        // Last part after the last pipe
+        parts[partIndex] = address.substring(start).trim();
+
+        return parts;
+    }
+public static void clearPersonsFile2() {
+    try {
+        FileWriter fw = new FileWriter("persons.txt", false);  
+        fw.write("");   
+        fw.close();
+        System.out.println("persons.txt has been cleared.");
+    } catch (IOException e) {
+        System.out.println("Failed to clear persons.txt: " + e.getMessage());
+    }
+}
 }
