@@ -39,6 +39,8 @@ public class Main {
             } else if (option.equals("updatePersonalDetails") || option.equals("2")) {
                 System.out.println("Please enter the person ID:");
                 String personID = scanner.nextLine();
+                System.out.println("Please enter the new ID:");
+                String newID = scanner.nextLine();
                 System.out.println("Please enter the new first name:");
                 String firstName = scanner.nextLine();
                 System.out.println("Please enter the new last name:");
@@ -49,7 +51,8 @@ public class Main {
                 String birthdate = scanner.nextLine();
 
                 Person person = new Person();
-                boolean isAdded = person.updatePersonalDetails(personID, firstName, lastName, address, birthdate);
+                boolean isAdded = person.updatePersonalDetails(personID, newID, firstName, lastName, address,
+                        birthdate);
                 if (!isAdded) {
                     System.out.println("Failed to cahnge person. Please check the input values.");
                     continue; // Ask for input again

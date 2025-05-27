@@ -49,9 +49,6 @@ public class Person {
 
     public boolean addPerson(String personID, String firstName, String lastName, String address, String birthdate) {
         // validate inputs
-
-        System.out.println("started validation");
-
         if (validate(personID, firstName, lastName, address, birthdate) == false) {
             return false;
         }
@@ -71,6 +68,7 @@ public class Person {
 
         return true;
     }
+
     // TODO: This method adds information about a person to a TXT file.
     // Condition 1: PersonID should be exactly 10 characters long;
     // the first two characters should be numbers between 2 and 9, there should be
@@ -87,12 +85,137 @@ public class Person {
     // inserted into a TXT file, and the addPerson function should return true.
     // Otherwise, the information should not be inserted into the TXT file, and the
     // addPerson function should return false. return true;
+    public boolean updatePersonalDetails(String personID, String newID, String firstName, String lastName,
+            String address,
+            String birthdate) {
 
-    public boolean validate(String personID, String firstName, String lastName, String address, String birthdate) {
-        // return false;
-        // Check if personID is 10 characters
+        // validate all inputs
+        if (validate(personID, firstName, lastName, address, birthdate) == false) {
+            return false;
+        }
 
+        if (validateID(newID) == false) {
+            System.out.println("new ID is invalid");
+            return false;
+        }
+
+        List<String> lines = new ArrayList<>();
+        // need to search persons file for personID
+        try {
+            FileInputStream fis = new FileInputStream("persons.txt");
+            Scanner scanner = new Scanner(fis);
+
+            String userLine = null;
+
+            // add all users except the one editting to to lines
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (!line.startsWith(personID)) {
+                    lines.add(line);
+                } else {
+                    userLine = line;
+                }
+            }
+
+            scanner.close();
+            fis.close();
+
+            // Clear the contents of the file before writing updated data
+            try (FileOutputStream fos = new FileOutputStream("persons.txt")) {
+                // Opening the file in this mode clears its contents
+            } catch (IOException e) {
+                return false;
+            }
+
+            // create updated user line
+            if (userLine != null) {
+                String[] userDetails = userLine.split(",", -1);
+                String updatedLine = newID + "," + firstName + "," + lastName + "," + address + "," + birthdate;
+
+                // DEMERITE POINT UPDATE - this is where it should add the demerit poitns when
+                // updated
+                // Append any remaining details from the original line that are not part of the
+                // updated details
+                for (int i = 5; i < userDetails.length; i++) {
+                    updatedLine += "," + userDetails[i];
+                }
+
+                // Add the updated line to the list of lines
+                lines.add(updatedLine);
+
+            } else {
+                System.out.println("Person with ID " + personID + " not found.");
+                return false; // Person not found, cannot update
+            }
+
+        } catch (IOException e) {
+            return false;
+        }
+
+        // Clear the contents of the file before writing updated data
+        try (FileOutputStream fos = new FileOutputStream("persons.txt")) {
+            // Opening the file in this mode clears its contents
+        } catch (IOException e) {
+            return false;
+        }
+
+        // write back all lines to persons.txt
+        try {
+            FileOutputStream fos = new FileOutputStream("persons.txt", true);
+            PrintStream ps = new PrintStream(fos);
+            for (String line : lines) {
+                ps.println(line);
+            }
+            ps.close();
+            fos.close();
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
+        // TODO: This method allows updating a given person's ID, firstName, lastName,
+        // address and birthday in a TXT file.
+        // Changing personal details will not affect their demerit points or the
+        // suspension status.
+
+        // All relevant conditions discussed for the addPerson function also need to be
+        // considered and checked in the updatPerson function.
+        // Condition 1: If a person is under 18, their address cannot be changed.
+        // Condition 2: If a person's birthday is going to be changed, then no other
+        // personal detail (i.e, person's ID, firstName, lastName, address) can be
+        // changed. //Condition 3: If the first character/digit of a person's ID is an
+        // even number, then their ID cannot be changed.
+        // Instruction: If the Person's updated information meets the above conditions
+        // and any other conditions you may want to consider,
+        // the Person's information should be updated in the TXT file with the updated
+        // information, and the updatePersonalDetails function should return true.
+        // //Otherwise, the Person's updated information should not be updated in the
+        // TXT file, and the updatePersonalDetails function should return false. return
+        // true;
+    }
+
+    public String addDemeritPoints() {
+        return ""; // remove after finishing
+    }
+
+    // TODO: This method adds demerit points for a given person in a TXT file.
+    // Condition 1: The format of the date of the offense should follow the
+    // following format: DD-MM-YYYY. Example: 15-11-1990
+    // Condition 2: The demerit points must be a whole number between 1-6
+    // Condition 3: If the person is under 21, the isSuspended variable should be
+    // set to true if the total demerit points within two years exceed 6.
+    // If the person is over 21, the isSuspended variable should be set to true if
+    // the total demerit points within two years exceed 12.
+
+    // Instruction: If the above condiations and any other conditions you may want
+    // to consider are met, the demerit points for a person should be inserted into
+    // the TXT file, //and the addDemerit Points function should return "Sucess".
+    // Otherwise, the addDemeritPoints function should return "Failed". return
+    // "Sucess";
+
+    public boolean validateID(String personID) {
         if (personID == null || personID.length() != 10) {
+            System.out.println(personID);
             System.out.println("ID wrong size");
             return false;
         }
@@ -132,7 +255,10 @@ public class Person {
             return false;
         }
 
-        // format check
+        return true;
+    }
+
+    public boolean validateAddress(String address) {
         if (address == null) {
             System.out.println("Address is null");
             return false;
@@ -151,6 +277,10 @@ public class Person {
             return false;
         }
 
+        return true;
+    }
+
+    public boolean validateBirthdate(String birthdate) {
         // format cehck
         if (birthdate == null || birthdate.length() != 10) {
             System.out.println("Birthdate is null or wrong size");
@@ -169,6 +299,8 @@ public class Person {
 
             System.out.println("day: " + day + ", month: " + month + ", year: " + year);
 
+            // not sure what the extent of the date check should be
+            // this will do for now
             if (day < 1 || day > 31)
                 return false;
             if (month < 1 || month > 12)
@@ -179,126 +311,32 @@ public class Person {
             return false;
         }
 
+        return true;
+    }
+
+    public boolean validate(String personID, String firstName, String lastName, String address, String birthdate) {
+        // return false;
+        // Check if personID is 10 characters
+        System.out.println(personID);
+        if (validateID(personID) == false) {
+            System.out.println("Person ID is invalid");
+            return false;
+        }
+
+        // format check
+        if (validateAddress(address) == false) {
+            System.out.println("Address is invalid");
+            return false;
+        }
+
+        if (validateBirthdate(birthdate) == false) {
+            System.out.println("Birthdate is invalid");
+            return false;
+        }
+
         System.out.println("completed validation");
 
         return true;
     }
 
-    public boolean updatePersonalDetails(String personID, String firstName, String lastName, String address,
-            String birthdate) {
-
-        // validate all inputs
-        if (validate(personID, firstName, lastName, address, birthdate) == false) {
-            return false;
-        }
-
-        List<String> lines = new ArrayList<>();
-        // need to search persons file for personID
-        try {
-            FileInputStream fis = new FileInputStream("persons.txt");
-            Scanner scanner = new Scanner(fis);
-
-            String userLine = null;
-
-            // add all users except the one editting to
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                if (!line.startsWith(personID)) {
-                    lines.add(line);
-                } else {
-                    userLine = line;
-                }
-            }
-
-            scanner.close();
-            fis.close();
-
-            // Clear the contents of the file before writing updated data
-            try (FileOutputStream fos = new FileOutputStream("persons.txt")) {
-                // Opening the file in this mode clears its contents
-            } catch (IOException e) {
-                return false;
-            }
-
-            // updated user
-            if (userLine != null) {
-                String[] userDetails = userLine.split(",", -1);
-                String updatedLine = personID + "," + firstName + "," + lastName + "," + address + "," + birthdate;
-
-                // Append any remaining details from the original line that are not part of the
-                // updated details
-                for (int i = 5; i < userDetails.length; i++) {
-                    updatedLine += "," + userDetails[i];
-                }
-
-                lines.add(updatedLine);
-
-            } else {
-                System.out.println("Person with ID " + personID + " not found.");
-                return false; // Person not found, cannot update
-            }
-
-        } catch (IOException e) {
-            return false;
-        }
-
-        // Clear the contents of the file before writing updated data
-        try (FileOutputStream fos = new FileOutputStream("persons.txt")) {
-            // Opening the file in this mode clears its contents
-        } catch (IOException e) {
-            return false;
-        }
-
-        // write back to persons.txt
-        try {
-            FileOutputStream fos = new FileOutputStream("persons.txt", true);
-            PrintStream ps = new PrintStream(fos);
-            for (String line : lines) {
-                ps.println(line);
-            }
-            ps.close();
-            fos.close();
-        } catch (IOException e) {
-            return false;
-        }
-
-        return true;
-        // TODO: This method allows updating a given person's ID, firstName, lastName,
-        // address and birthday in a TXT file.
-        // Changing personal details will not affect their demerit points or the
-        // suspension status.
-
-        // All relevant conditions discussed for the addPerson function also need to be
-        // considered and checked in the updatPerson function.
-        // Condition 1: If a person is under 18, their address cannot be changed.
-        // Condition 2: If a person's birthday is going to be changed, then no other
-        // personal detail (i.e, person's ID, firstName, lastName, address) can be
-        // changed. //Condition 3: If the first character/digit of a person's ID is an
-        // even number, then their ID cannot be changed.
-        // Instruction: If the Person's updated information meets the above conditions
-        // and any other conditions you may want to consider,
-        // the Person's information should be updated in the TXT file with the updated
-        // information, and the updatePersonalDetails function should return true.
-        // //Otherwise, the Person's updated information should not be updated in the
-        // TXT file, and the updatePersonalDetails function should return false. return
-        // true;
-    }
-
-    public String addDemeritPoints() {
-        return ""; // remove after finishing
-    }
 }
-// TODO: This method adds demerit points for a given person in a TXT file.
-// Condition 1: The format of the date of the offense should follow the
-// following format: DD-MM-YYYY. Example: 15-11-1990
-// Condition 2: The demerit points must be a whole number between 1-6
-// Condition 3: If the person is under 21, the isSuspended variable should be
-// set to true if the total demerit points within two years exceed 6.
-// If the person is over 21, the isSuspended variable should be set to true if
-// the total demerit points within two years exceed 12.
-
-// Instruction: If the above condiations and any other conditions you may want
-// to consider are met, the demerit points for a person should be inserted into
-// the TXT file, //and the addDemerit Points function should return "Sucess".
-// Otherwise, the addDemeritPoints function should return "Failed". return
-// "Sucess";
