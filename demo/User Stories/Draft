@@ -3,9 +3,40 @@
 # User Story 01
 As a new User, I want to create my own account and fill in the personal details, so that I can be registered on the RoadRegistry system and utilize the features of the system.
 + Acceptance Criteria
-- The system must validate the userID, address format and date of birth format along with a piece of ID document uploaded upon account creation
+- The system must validate the userID to be unique, address format (Street Number|Street|City|Victoria|Australia) and date of birth format (DD-MM-YYYY) along with a piece of ID document uploaded upon account creation
 - The user must receive a email confirmation if the account is created.
 - Incomplete Fields must be higlighted and deny registration by displaying error messages.
 
 # User Story 02
+As a registered user, I want to update my personal information, so that my information stays accurate.
++ Acceptance Criteria
+- UserId, Date Of Birth and Name should not be allowed to change, instead display an message to contact support.
+- Users under 18 cannout update postal address.
+- Changing password required MFA Authentication.
 
+# User Story 03
+As a Road Authority Officer, I want to track demerit pointers for users, so the records stay updated and can be tracked efficently.
++ Acceptance Criteria
+- The offense date must be recorded in DD-MM-YYYY format.
+- Demerit points must be integers between 1 and 6.
+- The points should be added under the correct user's record in the text file.
+
+# User Story 04
+As a RoadRegistry System, I want to automatically suspend drivers with excessive demerit points, so safety on the road is maintained
++ Acceptance Criteria
+- An Under 21 user is suspended if demerit points in greater than 6 in 2 years.
+- Any user over 21 is suspended if demerit point is over 12 in 2 years.
+- As soon as the user is suspended the isSuspended flag should be updated and in the text file
+
+# User Story 05
+
++ Acceptance Criteria
+
+# User Story 06
++ Acceptance Criteria
+
+# User Story 07
++ Acceptance Criteria
+
+# User Story 08
++ Acceptance Criteria
