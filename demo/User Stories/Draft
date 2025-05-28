@@ -29,14 +29,28 @@ As a RoadRegistry System, I want to automatically suspend drivers with excessive
 - As soon as the user is suspended the isSuspended flag should be updated and in the text file
 
 # User Story 05
-
+As a Road Authority Officer, I want to search for a user by UserID, so that I can check their user infromation and driving history
 + Acceptance Criteria
+- If the user does not exist, an error message must be shown.
+- If the user exists the profile must be displayed
+- The profile should be shown with name, address, DOB, demerit points, and suspension status in human-readable format.
 
 # User Story 06
+As System Admin, I want to prevent any record being created with invalid data, so the data intergrity is maintained
 + Acceptance Criteria
+- All invalid submissions must be flagged and logged
+- System must not record the data in any records or files
+- Flagged submissions must be held for review
 
 # User Story 07
+As a developer, I want to implement unit tests for all the critical functions of the system so that is is complient of the business requirements
 + Acceptance Criteria
-
+- Each function must have atleast 5 unique test cases
+- Unit Tests must validate both  valid and invalid inputs
+- All tests must pass successfully and show results on console
 # User Story 08
+As a  system adminstrator, I want to receive a log of failed registration attempts, so I can check input issues
 + Acceptance Criteria
+- All the failed submissions should record attempted userID and error type
+- Logs must include timestamp and be human readable
+- Logs should be stored in a different file in human readable format
