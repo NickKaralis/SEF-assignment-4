@@ -1,0 +1,56 @@
+# 8 User Stories are required along with 24 acceptance criteria
+
+# User Story 01
+As a new User, I want to create my own account and fill in the personal details, so that I can be registered on the RoadRegistry system and utilize the features of the system.
++ Acceptance Criteria
+- The system must validate the userID to be unique, address format (Street Number|Street|City|Victoria|Australia) and date of birth format (DD-MM-YYYY) along with a piece of ID document uploaded upon account creation
+- The user must receive a email confirmation if the account is created.
+- Incomplete Fields must be higlighted and deny registration by displaying error messages.
+
+# User Story 02
+As a registered user, I want to update my personal information, so that my information stays accurate.
++ Acceptance Criteria
+- UserId, Date Of Birth and Name should not be allowed to change, instead display an message to contact support.
+- Users under 18 cannout update postal address.
+- Changing password required MFA Authentication.
+
+# User Story 03
+As a Road Authority Officer, I want to track demerit pointers for users, so the records stay updated and can be tracked efficently.
++ Acceptance Criteria
+- The offense date must be recorded in DD-MM-YYYY format.
+- Demerit points must be integers between 1 and 6.
+- The points should be added under the correct user's record in the text file.
+
+# User Story 04
+As a RoadRegistry System, I want to automatically suspend drivers with excessive demerit points, so safety on the road is maintained
++ Acceptance Criteria
+- An Under 21 user is suspended if demerit points in greater than 6 in 2 years.
+- Any user over 21 is suspended if demerit point is over 12 in 2 years.
+- As soon as the user is suspended the isSuspended flag should be updated and in the text file
+
+# User Story 05
+As a Road Authority Officer, I want to search for a user by UserID, so that I can check their user infromation and driving history
++ Acceptance Criteria
+- If the user does not exist, an error message must be shown.
+- If the user exists the profile must be displayed
+- The profile should be shown with name, address, DOB, demerit points, and suspension status in human-readable format.
+
+# User Story 06
+As System Admin, I want to prevent any record being created with invalid data, so the data intergrity is maintained
++ Acceptance Criteria
+- All invalid submissions must be flagged and logged
+- System must not record the data in any records or files
+- Flagged submissions must be held for review
+
+# User Story 07
+As a developer, I want to implement unit tests for all the critical functions of the system so that is is complient of the business requirements
++ Acceptance Criteria
+- Each function must have atleast 5 unique test cases
+- Unit Tests must validate both  valid and invalid inputs
+- All tests must pass successfully and show results on console
+# User Story 08
+As a  system adminstrator, I want to receive a log of failed registration attempts, so I can check input issues
++ Acceptance Criteria
+- All the failed submissions should record attempted userID and error type
+- Logs must include timestamp and be human readable
+- Logs should be stored in a different file in human readable format
