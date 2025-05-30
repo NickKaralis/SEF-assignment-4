@@ -25,7 +25,6 @@ public class PersonTest {
     void testAddPersonValid() {
         boolean result = person.addPerson("78l_f%&cCB", "Steve", "Smith",
                 "15 | Example Street | Melbourne | Victoria | Australia", "01-01-2025");
-        result = false;
         assertTrue(result);
     }
 
