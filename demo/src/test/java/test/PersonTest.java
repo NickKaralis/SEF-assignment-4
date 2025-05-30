@@ -6,6 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class PersonTest {
     private Person person;
 
@@ -61,18 +65,44 @@ public class PersonTest {
     // -------------------- UPDATE PERSON TESTS --------------------
     // cbs commenting properly
     @Test
-    void testUpdatePersonNoChanges() {
-        person.addPerson("77l_f%&cCB", "Anthony", "Brown", "15 | Example Street | Melbourne | Victoria | Australia", "19-12-1999");
-        boolean result = person.updatePersonalDetails("77l_f%&cCB", "77l_f%&cCB", "", "", "15 | Example Street | Melbourne | Victoria | Australia", "");
+// Helper to prepare file
+    private void writeTestPersonToFile(String line) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("persons.txt"));
+        writer.write(line);
+        writer.newLine();
+        writer.close();
+    }
+
+    @Test
+    void testUpdatePersonNoChanges() throws IOException {
+        // Prepare test data in file
+        writeTestPersonToFile("77l_f%&cCB,Anthony,Brown,15 | Example Street | Melbourne | Victoria | Australia,19-12-1999,false");
+
+        // Perform update - only birthday changes
+        boolean result = person.updatePersonalDetails(
+            "77l_f%&cCB", "77l_f%&cCB", "", "", 
+            "15 | Example Street | Melbourne | Victoria | Australia", 
+            "19-12-1992"
+        );
+
         assertTrue(result);
     }
 
     @Test
-    void testUpdatePersonValidChanges() {
-        person.addPerson("77l_f%&cCB", "Anthony", "Brown", "15 | Example Street | Melbourne | Victoria | Australia", "19-12-1999");
-        boolean result = person.updatePersonalDetails("77l_f%&cCB", "77l_f%&cCB", "Anthony", "Brown", "15 | Example Street | Melbourne | Victoria | Australia", "19-12-1999");
+    void testUpdatePersonValidChanges() throws IOException {
+        // Prepare test data in file
+        writeTestPersonToFile("77l_f%&cCB,Anthony,Brown,15 | Example Street | Melbourne | Victoria | Australia,19-12-1999,false");
+
+        // Perform update - address change
+        boolean result = person.updatePersonalDetails(
+            "77l_f%&cCB", "77l_f%&cCB", "Anthony", "Brown", 
+            "16 | Example Street | Melbourne | Victoria | Australia", 
+            "19-12-1999"
+        );
+
         assertTrue(result);
     }
+
 
     @Test
     void testUpdatePersonInvalidFields() {
@@ -83,8 +113,8 @@ public class PersonTest {
 
     @Test
     void testUpdatePersonUnder18ChangeAddressAndID() {
-        person.addPerson("77l_f%&cCB", "Child", "Smith", "15 | Example Street | Melbourne | Victoria | Australia", "19-01-2007");
-        boolean result = person.updatePersonalDetails("77l_f%&cCB", "88l_f%&xXY", "", "", "16 | Example Street | Melbourne | Victoria | Australia", "");
+        person.addPerson("77l_f%&cCZ", "Child", "Smith", "15 | Example Street | Melbourne | Victoria | Australia", "19-01-2009");
+        boolean result = person.updatePersonalDetails("77l_f%&cCZ", "", "", "", "16 | Example Street | Melbourne | Victoria | Australia", "");
         assertFalse(result);
     }
 
@@ -96,7 +126,7 @@ public class PersonTest {
     }
 
     // -------------------- ADD DEMERIT POINTS TESTS --------------------
-
+    
     @Test
     void testAddDemeritValid() {
         person.addPerson("28l_f%&ccb", "Test", "User", "15 | Example Street | Melbourne | Victoria | Australia", "01-01-2000");

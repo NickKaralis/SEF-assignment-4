@@ -72,22 +72,7 @@ public class Person {
     public boolean updatePersonalDetails(String personID, String newID, String firstName, String lastName,
             String address, String birthdate) {
 
-        // validate all inputs
-        if (validate(personID, firstName, lastName, address, birthdate) == false) {
-            return false;
-        }
-
-        if (validateID(newID) == false) {
-            System.out.println("new ID is invalid");
-            return false;
-        }
-
-        boolean isEven = false;
-        int firstDigit = Character.getNumericValue(personID.charAt(0));
-        if (firstDigit % 2 == 0 && !newID.equals(personID)) {
-            System.out.println("Your ID will not be changed as the first character is an even number");
-            isEven = true;
-        }
+       
 
         // NEED TO CHECK UPDATE CONDITIONS
         // Condition 1: If a person is under 18, their address cannot be changed.
@@ -99,6 +84,7 @@ public class Person {
 
         // create list of lines in the persons.txt file
         List<String> lines = new ArrayList<>();
+        Boolean isEven=false;
 
         // need to search persons file for personID
         try {
@@ -123,23 +109,52 @@ public class Person {
             fis.close();
             // create updated user line
             if (userLine != null) {
-
-                // Check if the birthdate is the same as in the file
                 String[] userDetails = userLine.split(",", -1);
+    
+                if (firstName == null || firstName.isBlank()) {
+                    firstName = userDetails[1];
+                }
+                if (lastName == null || lastName.isBlank()) {
+                    lastName = userDetails[2];
+                }
+                if (address == null || address.isBlank()) {
+                    address = userDetails[3];
+                }
+                if (birthdate == null || birthdate.isBlank()) {
+                    birthdate = userDetails[4];
+                }
+                if (newID == null || newID.isBlank()) {
+                    newID = userDetails[0];
+                }
+    
+                if (!validate(personID, firstName, lastName, address, birthdate)) {
+                    return false;
+                }
+                if (!validateID(newID)) {
+                    System.out.println("new ID is invalid");
+                    return false;
+                }
+    
+                int firstDigit = Character.getNumericValue(personID.charAt(0));
+                if (firstDigit % 2 == 0 && !newID.equals(personID)) {
+                    System.out.println("Your ID will not be changed as the first character is an even number");
+                    isEven = true;
+                }
+    
                 String existingBirthdate = userDetails[4];
-
                 String updatedLine = null;
-
-                if (!existingBirthdate.equals(birthdate)) {
-                    // reject if other fields changed
-                    if (!newID.equals(userDetails[0]) || !firstName.equals(userDetails[1]) || !lastName.equals(userDetails[2]) || !address.equals(userDetails[3])) {
+    
+                if (!existingBirthdate.strip().equals(birthdate.strip())) {
+                    // Condition 2: birthday changes → no other change allowed
+                    if (!newID.equals(userDetails[0]) || !firstName.equals(userDetails[1]) ||
+                        !lastName.equals(userDetails[2]) || !address.equals(userDetails[3])) {
                         System.out.println("Cannot change other details if birthday is changed");
                         return false;
                     }
                     System.out.println("birthday differs from existing birthday, updating only birthday");
                     updatedLine = userDetails[0] + "," + userDetails[1] + "," + userDetails[2] + "," + userDetails[3] + "," + birthdate;
                 } else {
-                    // check if under 18 for address change
+                    // Condition 1: under 18 can't change address
                     boolean isUnder18 = false;
                     try {
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -148,45 +163,45 @@ public class Person {
                         if (today.minusYears(18).isBefore(birthDateCheckDate)) {
                             System.out.println("Your address will not be changed as you are under 18");
                             isUnder18 = true;
+                            return false;
                         }
                     } catch (DateTimeParseException e) {
                         System.out.println("Invalid birthdate format");
                     }
                     if (isUnder18) {
-                        address = userDetails[3]; // keep old address
+                        address = userDetails[3];
                     }
-                
+    
                     if (isEven) {
                         updatedLine = userDetails[0] + "," + firstName + "," + lastName + "," + address + "," + birthdate;
                     } else {
                         updatedLine = newID + "," + firstName + "," + lastName + "," + address + "," + birthdate;
                     }
                 }
-                
-
-                System.out.println("updatedLine: " + updatedLine);
-
-                // DEMERITE POINT UPDATE - this is where it should add the demerit poitns when
-                // updated
-             
+    
+                // Preserve demerit points
                 for (int i = 5; i < userDetails.length; i++) {
                     updatedLine += "," + userDetails[i];
                 }
-
-                // Add the updated line to the list of lines
+    
                 lines.add(updatedLine);
-            
+    
+                // Update in memory
+                this.personID = isEven ? this.personID : newID;
+                this.firstName = firstName;
+                this.lastName = lastName;
+                this.address = address;
+                this.birthdate = birthdate;
+    
             } else {
                 System.out.println("Person with ID " + personID + " not found.");
-                return false; // Person not found, cannot update
+                return false;
             }
-
-            // System.out.println("HERE 4");
-
+    
         } catch (IOException e) {
             return false;
         }
-        this.personID = isEven ? this.personID : newID; // Only update if allowed
+        this.personID = isEven ? this.personID : newID;  
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
