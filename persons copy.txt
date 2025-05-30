@@ -1,5 +1,0 @@
-56s_d%&fAB,Tim,Kara,32 | Highland Street | Melbourne | Victoria | Australia,15-11-2002,false
-56s_d%&fBB,nicholas,karalis,32 | Corona Street | Melbourne | Victoria | Australia,15-11-2003,false,05-05-2025,1
-56s_d%&fCB,rowan,wildman,32 | Example Street | Melbourne | Victoria | Australia,15-11-2004,false,05-05-2025,5
-56s_d%&fCC,Test,test2,32 | Highland Street | Melbourne | Victoria | Australia,11-11-2000,false,05-05-2025,5
-56s_d%&fCD,n,k,32 | Highland Street | Melbourne | Victoria | Australia,12-12-2000,true,03-05-2025,5,04-05-2025,5,05-05-2025,5

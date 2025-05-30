@@ -20,7 +20,6 @@ public class Main {
             System.out.println("DOCUMENT CURRENTPERSON ID: " + persons.get(i).getPersonID());
         }
 
-
         while (true) {
             System.out.println("What would you like to do?");
             System.out.println("1. add person");
@@ -36,7 +35,8 @@ public class Main {
                 String firstName = scanner.nextLine();
                 System.out.println("Please enter the last name:");
                 String lastName = scanner.nextLine();
-                System.out.println("Please enter the address (format: street number | street | city | state | country):");
+                System.out
+                        .println("Please enter the address (format: street number | street | city | state | country):");
                 String address = scanner.nextLine();
                 System.out.println("Please enter the birthdate (DD-MM-YYYY):");
                 String birthdate = scanner.nextLine();
@@ -65,12 +65,13 @@ public class Main {
                 String firstName = scanner.nextLine();
                 System.out.println("Please enter the new last name:");
                 String lastName = scanner.nextLine();
-                System.out.println("Please enter the address new (format: street number | street | city | state | country):");
+                System.out.println(
+                        "Please enter the address new (format: street number | street | city | state | country):");
                 String address = scanner.nextLine();
                 System.out.println("Please enter new the birthdate (DD-MM-YYYY):");
                 System.out.println("");
                 String birthdate = scanner.nextLine();
-                
+
                 Person person = null;
                 for (Person p : persons) {
                     if (p.personID.equals(personID)) {
@@ -78,14 +79,14 @@ public class Main {
                         break;
                     }
                 }
-                
+
                 if (person == null) {
                     System.out.println("Person with ID " + personID + " not found.");
                     continue; // Ask for input again
                 }
 
                 if (newID == null || newID.trim().isEmpty()) {
-                newID = person.personID;
+                    newID = person.personID;
                 }
                 if (firstName == null || firstName.trim().isEmpty()) {
                     firstName = person.firstName;
@@ -110,8 +111,8 @@ public class Main {
 
                 // Here we need to call update personal details
                 System.out.println("Personal details updated for person ID: " + personID);
-                
-// ---------------------------------------------------------------------------------------------------------------------------
+
+                // ---------------------------------------------------------------------------------------------------------------------------
 
             } else if (option.equals("add demerit points") || option.equals("3")) {
                 System.out.println("Please enter the person ID:");
@@ -120,23 +121,25 @@ public class Main {
                 String offenseDate = scanner.nextLine();
                 System.out.println("Please enter the demerit points:");
                 int demeritPoints = Integer.parseInt(scanner.nextLine());
-                
-                //GET INDEX OF THE PERSON IN THE LIST, IF FALSE BREAK FROM THE LOOP OR IF INDEX IS -1
+
+                // GET INDEX OF THE PERSON IN THE LIST, IF FALSE BREAK FROM THE LOOP OR IF INDEX
+                // IS -1
                 // IF INDEX -1000 DO NOTHING
                 int personListIndex = -1000;
                 for (int i = 0; i < persons.size(); i++) {
                     if (persons.get(i).getPersonID().equals(personID)) {
-                        personListIndex = i; //FOUND INDEX
+                        personListIndex = i; // FOUND INDEX
                     }
                 }
-                if (personListIndex == -1000) { System.err.println("Cant find index");}
-                else{
-                
-                // Here we need to call add demerit points
-                Person p = persons.get(personListIndex);
-                p.addDemeritPoints(demeritPoints, offenseDate);
-                write(persons);
-                System.out.println("Demerit points added for person ID: " + personID);
+                if (personListIndex == -1000) {
+                    System.err.println("Cant find index");
+                } else {
+
+                    // Here we need to call add demerit points
+                    Person p = persons.get(personListIndex);
+                    p.addDemeritPoints(demeritPoints, offenseDate);
+                    write(persons);
+                    System.out.println("Demerit points added for person ID: " + personID);
                 }
 
             } else if (option.equals("exit") || option.equals("4")) {
@@ -151,51 +154,53 @@ public class Main {
     }
 
     public static void read(List<Person> persons) {
-    try {
-        FileInputStream fis = new FileInputStream("persons.txt");
-        Scanner scanner = new Scanner(fis);
+        try {
+            FileInputStream fis = new FileInputStream("persons.txt");
+            Scanner scanner = new Scanner(fis);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine().trim();
-            if (line.isEmpty()) continue;  // Safety cehck ts
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine().trim();
+                if (line.isEmpty())
+                    continue; // Safety cehck ts
 
-            String[] userDetails = line.split(",", -1);
-            if (userDetails.length < 5) {
-                System.out.println("Invalid line (too short): " + line);
-                continue;
-            }
-
-            Person person = new Person();
-            person.personID = userDetails[0];
-            person.firstName = userDetails[1];
-            person.lastName = userDetails[2];
-            person.address = userDetails[3];
-            person.birthdate = userDetails[4];
-            person.isSuspended = Boolean.parseBoolean(userDetails[5]);
-            person.demeritPoints = new HashMap<>();
-
-            for (int i = 6; i < userDetails.length - 1; i += 2) {
-                if (userDetails[i].isEmpty() || userDetails[i + 1].isEmpty()) continue;
-            
-                try {
-                    LocalDate offenceDate = LocalDate.parse(userDetails[i], formatter);
-                    int points = Integer.parseInt(userDetails[i + 1]);
-                    person.demeritPoints.put(offenceDate, points);
-                } catch (Exception e) {
-                    System.out.println("Skipping bad demerit entry at: " + userDetails[i]);
+                String[] userDetails = line.split(",", -1);
+                if (userDetails.length < 5) {
+                    System.out.println("Invalid line (too short): " + line);
+                    continue;
                 }
+
+                Person person = new Person();
+                person.personID = userDetails[0];
+                person.firstName = userDetails[1];
+                person.lastName = userDetails[2];
+                person.address = userDetails[3];
+                person.birthdate = userDetails[4];
+                person.isSuspended = Boolean.parseBoolean(userDetails[5]);
+                person.demeritPoints = new HashMap<>();
+
+                for (int i = 6; i < userDetails.length - 1; i += 2) {
+                    if (userDetails[i].isEmpty() || userDetails[i + 1].isEmpty())
+                        continue;
+
+                    try {
+                        LocalDate offenceDate = LocalDate.parse(userDetails[i], formatter);
+                        int points = Integer.parseInt(userDetails[i + 1]);
+                        person.demeritPoints.put(offenceDate, points);
+                    } catch (Exception e) {
+                        System.out.println("Skipping bad demerit entry at: " + userDetails[i]);
+                    }
+                }
+
+                persons.add(person);
             }
 
-            persons.add(person);  
+            scanner.close();
+        } catch (Exception e) {
+            System.out.println("Error reading file: " + e.getMessage());
         }
-
-        scanner.close();
-    } catch (Exception e) {
-        System.out.println("Error reading file: " + e.getMessage());
     }
-}
 
     public static void write(List<Person> persons) {
         // Clear the contents of the file before writing updated data
@@ -218,22 +223,21 @@ public class Main {
                 line.append(p.lastName).append(",");
                 line.append(p.address).append(",");
                 line.append(p.birthdate).append(",");
-                line.append(p.isSuspended); 
-
+                line.append(p.isSuspended);
 
                 // Write demerit points if available
-            if (p.demeritPoints != null && !p.demeritPoints.isEmpty()) {
-                List<LocalDate> sortedDates = new ArrayList<>(p.demeritPoints.keySet());
-                Collections.sort(sortedDates);
-                for (LocalDate date : sortedDates) {
-                    int points = p.demeritPoints.get(date);
-                    line.append(",").append(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-                    line.append(",").append(points);
+                if (p.demeritPoints != null && !p.demeritPoints.isEmpty()) {
+                    List<LocalDate> sortedDates = new ArrayList<>(p.demeritPoints.keySet());
+                    Collections.sort(sortedDates);
+                    for (LocalDate date : sortedDates) {
+                        int points = p.demeritPoints.get(date);
+                        line.append(",").append(date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+                        line.append(",").append(points);
+                    }
                 }
-            }
 
-            ps.println(line.toString());
-        }
+                ps.println(line.toString());
+            }
 
             ps.close();
             fos.close();
@@ -243,16 +247,14 @@ public class Main {
         }
     }
 
-
-
-public static void clearPersonsFile() {
-    try {
-        FileWriter fw = new FileWriter("persons.txt", false);  
-        fw.write("");  
-        fw.close();
-        System.out.println("persons.txt has been cleared.");
-    } catch (IOException e) {
-        System.out.println("Failed to clear persons.txt: " + e.getMessage());
+    public static void clearPersonsFile() {
+        try {
+            FileWriter fw = new FileWriter("persons.txt", false);
+            fw.write("");
+            fw.close();
+            System.out.println("persons.txt has been cleared.");
+        } catch (IOException e) {
+            System.out.println("Failed to clear persons.txt: " + e.getMessage());
+        }
     }
-}
 }
