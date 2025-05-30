@@ -239,6 +239,10 @@ public String addDemeritPoints(int demeritsToAdd, String offenceDate) {
     if (!isValidDate(offenceDate)) {
         return "Failed";
     }
+    if (this.birthdate == null || !validateBirthdate(this.birthdate)) {
+        System.out.println("Birthdate is null or invalid.");
+        return "Failed";
+    }
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     LocalDate offenceLocalDate = LocalDate.parse(offenceDate, formatter);
@@ -320,7 +324,7 @@ public String addDemeritPoints(int demeritsToAdd, String offenceDate) {
         }
         int digit1 = Character.getNumericValue(c1);
         int digit2 = Character.getNumericValue(c2);
-        if (digit1 <= 2 || digit1 >= 9 || digit2 <= 2 || digit2 >= 9) {
+        if (digit1 < 2 || digit1 > 9 || digit2 < 2 || digit2 > 9) {
             System.out.println("First two characters are not digits between 2 and 9");
             return false;
         }
@@ -451,7 +455,7 @@ public String addDemeritPoints(int demeritsToAdd, String offenceDate) {
             System.out.println("Birthdate is invalid");
             return false;
         }
-
+        
         System.out.println("completed validation");
 
         return true;

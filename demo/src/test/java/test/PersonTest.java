@@ -120,7 +120,7 @@ public class PersonTest {
 
     @Test
     void testUpdatePersonIDStartsWithEvenNumber() {
-        person.addPerson("28l_f%&ccb", "Alex", "Smith", "15 | Example Street | Melbourne | Victoria | Australia", "19-01-2000");
+        person.addPerson("28l_f%&cCB", "Alex", "Smith", "15 | Example Street | Melbourne | Victoria | Australia", "19-01-2000");
         boolean result = person.updatePersonalDetails("28l_f%&ccb", "48l_f%&XYB", "", "", "", "");
         assertFalse(result);
     }
@@ -129,28 +129,30 @@ public class PersonTest {
     
     @Test
     void testAddDemeritValid() {
-        person.addPerson("28l_f%&ccb", "Test", "User", "15 | Example Street | Melbourne | Victoria | Australia", "01-01-2000");
+        person.addPerson("39l_f%&cCB", "Test", "User", "15 | Example Street | Melbourne | Victoria | Australia", "01-01-2000");
         String result = person.addDemeritPoints(2, "19-01-2025");
         assertEquals("Success", result);
     }
 
     @Test
     void testAddDemeritInvalidValues() {
-        person.addPerson("28l_f%&ccb", "Test", "User", "15 | Example Street | Melbourne | Victoria | Australia", "01-01-2000");
+        person.addPerson("28l_f%&cCB", "Test", "User", "15 | Example Street | Melbourne | Victoria | Australia", "01-01-2000");
         String result = person.addDemeritPoints(-1, "74#$235");
         assertEquals("Failed", result);
     }
 
     @Test
     void testAddDemeritPointsCauseSuspension() {
-        person.addPerson("28l_f%&ccb", "Test", "User", "15 | Example Street | Melbourne | Victoria | Australia", "01-01-2000");
-        person.addDemeritPoints(7, "01-01-2025");
+        person.addPerson("28l_f%&cCB", "Test", "User", "15 | Example Street | Melbourne | Victoria | Australia", "01-01-2000");
+        person.addDemeritPoints(5, "01-01-2025");
+        person.addDemeritPoints(5, "02-01-2025");
+        person.addDemeritPoints(5, "03-01-2025");
         assertTrue(person.isSuspended);
     }
 
     @Test
     void testAddDemeritPointsToSuspendedUser() {
-        person.addPerson("28l_f%&ccb", "Test", "User", "15 | Example Street | Melbourne | Victoria | Australia", "01-01-2000");
+        person.addPerson("28l_f%&cCB", "Test", "User", "15 | Example Street | Melbourne | Victoria | Australia", "01-01-2000");
         person.addDemeritPoints(7, "01-01-2025");
         String result = person.addDemeritPoints(5, "01-02-2025");
         assertEquals("Success", result); 
@@ -158,7 +160,7 @@ public class PersonTest {
 
     @Test
     void testAddDemeritInvalidAmountAndDate() {
-        person.addPerson("28l_f%&ccb", "Test", "User", "15 | Example Street | Melbourne | Victoria | Australia", "01-01-2000");
+        person.addPerson("28l_f%&cCB", "Test", "User", "15 | Example Street | Melbourne | Victoria | Australia", "01-01-2000");
         String result = person.addDemeritPoints(7, "01-01-2025");
         assertEquals("Failed", result);
     }
