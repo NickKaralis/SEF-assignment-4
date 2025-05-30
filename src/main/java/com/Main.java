@@ -15,7 +15,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         List<Person> persons = new ArrayList<Person>();
-        read(persons);
+        read(persons); // Load existing person records from file into the list
         for (int i = 0; i < persons.size(); i++) {
             System.out.println("DOCUMENT CURRENTPERSON ID: " + persons.get(i).getPersonID());
         }
@@ -49,7 +49,7 @@ public class Main {
                 }
 
                 persons.add(person); // Add the person to the list
-                write(persons); // Write the updated list to the file)
+                write(persons); // Write the updated list to the file
 
                 // Here we need to add to method to add a person
                 System.out.println("Person added with ID: " + personID);
@@ -152,7 +152,8 @@ public class Main {
         }
 
     }
-
+    
+    // Read all persons from file and populate the list
     public static void read(List<Person> persons) {
         try {
             FileInputStream fis = new FileInputStream("persons.txt");
@@ -201,7 +202,7 @@ public class Main {
             System.out.println("Error reading file: " + e.getMessage());
         }
     }
-
+    // Write all person data to the file, overwriting existing content
     public static void write(List<Person> persons) {
         // Clear the contents of the file before writing updated data
         try (FileOutputStream fos = new FileOutputStream("persons.txt")) {
