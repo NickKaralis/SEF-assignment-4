@@ -32,7 +32,11 @@ public class Person {
 
     public boolean addPerson(String personID, String firstName, String lastName, String address, String birthdate) {
         // validate inputs
-        if (validate(personID, firstName, lastName, address, birthdate) == false) {
+        if (!validate(personID, firstName, lastName, address, birthdate)) {
+            return false;
+        }
+        if (isPersonIDExists(personID)) {
+            System.out.println("Person with ID " + personID + " already exists.");
             return false;
         }
 
@@ -307,8 +311,23 @@ public String addDemeritPoints(int demeritsToAdd, String offenceDate) {
 
 
     //|----------------------------------------------------------------------------------------------------|
-//HELPER FUNCTIONS 
+//HELPER FUNCTIONS
+    public boolean isPersonIDExists(String personID) {
+        try (Scanner scanner = new Scanner(new FileInputStream("persons.txt"))) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(",");
+                if (parts.length > 0 && parts[0].equals(personID)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading persons.txt: " + e.getMessage());
+        }
+        return false;
+    }
     public boolean validateID(String personID) {
+
         if (personID == null || personID.length() != 10) {
             System.out.println(personID);
             System.out.println("ID wrong size");
@@ -440,6 +459,7 @@ public String addDemeritPoints(int demeritsToAdd, String offenceDate) {
         // return false;
         // Check if personID is 10 characters
         System.out.println(personID);
+
         if (validateID(personID) == false) {
             System.out.println("Person ID is invalid");
             return false;
