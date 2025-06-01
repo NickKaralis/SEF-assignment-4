@@ -269,8 +269,8 @@ public String addDemeritPoints(int demeritsToAdd, String offenceDate) {
     // Add new points
     totalPoints += demeritsToAdd;
     this.demeritPoints.put(offenceLocalDate, demeritsToAdd);
-    System.out.println("TOTAL POINTS" + totalPoints);
-    System.out.println("AGE" + age);
+    System.out.println("TOTAL POINTS " + totalPoints);
+    System.out.println("AGE " + age);
 
     // Update suspension
     if (age < 21) {
