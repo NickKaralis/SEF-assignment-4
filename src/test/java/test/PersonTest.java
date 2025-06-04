@@ -125,7 +125,7 @@ public class PersonTest {
     void testUpdatePersonIDStartsWithEvenNumber() {
         person.addPerson("28l_f%&cCB", "Alex", "Smith", "15 | Example Street | Melbourne | Victoria | Australia",
                 "19-01-2000");
-        boolean result = person.updatePersonalDetails("28l_f%&ccb", "48l_f%&XYB", "", "", "", "");
+        boolean result = person.updatePersonalDetails("28l_f%&cCB", "48l_f%&XYB", "", "", "", "");
         assertFalse(result);
     }
 
