@@ -138,9 +138,18 @@ public class Main {
 
                     // Here we need to call add demerit points
                     Person p = persons.get(personListIndex);
-                    p.addDemeritPoints(demeritPoints, offenseDate);
-                    write(persons);
-                    System.out.println("Demerit points added for person ID: " + personID);
+                    String result = p.addDemeritPoints(demeritPoints, offenseDate);
+                    
+                    if ("Success".equals(result)) {
+                        write(persons);
+                        System.out.println("Success: Demerit points added for person ID: " + personID);
+                    
+                        if (p.isSuspended) {
+                            System.out.println("User: " + p.personID + " license is suspended");
+                        }
+                    } else {
+                        System.out.println("Failure: Could not add demerit points for person ID: " + personID);
+                    }
                 }
 
             } else if (option.equals("exit") || option.equals("4")) {

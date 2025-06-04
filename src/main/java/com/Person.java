@@ -236,6 +236,12 @@ public class Person {
 //|----------------------------------------------------------------------------------------------------|
 //|----------------------------------------------------------------------------------------------------|
 public String addDemeritPoints(int demeritsToAdd, String offenceDate) {
+    // IF YOU ARE SUSPENDED IN AUSTRALIA 
+
+    // if (isSuspended){ 
+    //     System.out.println("Cannot add demerits to a user with a suspended license");
+    //     return "Failed";
+    // }
     if (demeritsToAdd < 1 || demeritsToAdd > 6) {
         System.out.println("Demerit points must be between 1 and 6.");
         return "Failed";

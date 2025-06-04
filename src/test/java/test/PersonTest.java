@@ -51,7 +51,7 @@ public class PersonTest {
         Person second = new Person();
         boolean result = second.addPerson("78l_f%&cCB", "Steve", "Smith",
                 "15 | Example Street | Melbourne | Victoria | Australia", "01-01-2025");
-        assertTrue(result); // Assume no shared duplicate checking
+        assertTrue(result);  
     }
 
     // Test Case 5: Invalid address structure
@@ -152,7 +152,7 @@ public class PersonTest {
         person.addPerson("28l_f%&cCB", "Test", "User", "15 | Example Street | Melbourne | Victoria | Australia",
                 "01-01-2000");
         person.addDemeritPoints(5, "01-01-2025");
-        person.addDemeritPoints(5, "02-01-2025");
+        person.addDemeritPoints(3, "02-01-2025");
         person.addDemeritPoints(5, "03-01-2025");
         assertTrue(person.isSuspended);
     }
@@ -161,8 +161,12 @@ public class PersonTest {
     void testAddDemeritPointsToSuspendedUser() {
         person.addPerson("28l_f%&cCB", "Test", "User", "15 | Example Street | Melbourne | Victoria | Australia",
                 "01-01-2000");
-        person.addDemeritPoints(7, "01-01-2025");
-        String result = person.addDemeritPoints(5, "01-02-2025");
+        person.addDemeritPoints(5, "01-01-2025");
+        String result = person.addDemeritPoints(5, "02-01-2025");
+        result = person.addDemeritPoints(5, "01-01-2025");
+        result = person.addDemeritPoints(5, "03-01-2025");
+
+        result = person.addDemeritPoints(5, "01-02-2025");
         assertEquals("Success", result);
     }
 
@@ -170,7 +174,7 @@ public class PersonTest {
     void testAddDemeritInvalidAmountAndDate() {
         person.addPerson("28l_f%&cCB", "Test", "User", "15 | Example Street | Melbourne | Victoria | Australia",
                 "01-01-2000");
-        String result = person.addDemeritPoints(7, "01-01-2025");
+        String result = person.addDemeritPoints(7, "01-100-2025");
         assertEquals("Failed", result);
     }
 }
